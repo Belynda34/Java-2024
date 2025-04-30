@@ -23,7 +23,7 @@ public class User implements UserDetails {
     @Column(name="username",length = 10)
     private String username;
     @Email(message = "Invalid email")
-    @Column(unique = true)
+    @Column(nullable = false,unique=true)
     private String email;
     @JsonIgnore
     private String password ;
@@ -51,3 +51,5 @@ public class User implements UserDetails {
 
 
 //@Pattern(regexp = "^[A-Z][a-z]*$", message = "Name must start with a capital letter and contain only letters")
+//-- For MySQL
+//        ALTER TABLE users DROP INDEX UKr43af9ap4edm43mmtq01oddj6; for being unique

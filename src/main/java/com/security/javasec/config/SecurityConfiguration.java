@@ -26,9 +26,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/**",
+                                "/api/v1/customers/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
+
                         ).permitAll()  // allow login/signup
                         .anyRequest().authenticated()
                 )

@@ -2,7 +2,7 @@ package com.security.javasec.auth;
 
 
 import com.security.javasec.auth.exceptions.InvalidCredentialsException;
-import com.security.javasec.auth.exceptions.UsernameTakenException;
+import com.security.javasec.auth.exceptions.EmailTakenException;
 import com.security.javasec.enums.Role;
 import com.security.javasec.models.User;
 import com.security.javasec.repositories.UserRepository;
@@ -19,9 +19,9 @@ public class AuthService {
     private final JWTService jwtService;
 
     public AuthenticationResponse register(RegisterDTO dto){
-        boolean usernameTaken = userRepository.existsByUsername(dto.getUsername());
-        if(usernameTaken)
-            throw new UsernameTakenException("Username Taken");
+        boolean emailTaken = userRepository.existsByEmail(dto.getEmail());
+        if(emailTaken)
+            throw new EmailTakenException("Email Taken");
         try{
             var user = new User();
             user.setEmail(dto.getEmail());
