@@ -1,11 +1,13 @@
 package com.security.javasec.utils;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Configuration
 public class Mailer {
 
     @Bean
@@ -14,8 +16,8 @@ public class Mailer {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("rexndizihiwe@gmail.com");
-        mailSender.setPassword("fdma elql hyho jxyl");
+        mailSender.setUsername("rumu.belynda@gmail.com");
+        mailSender.setPassword("qpytbmfehxbcsuen");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol","smtp");

@@ -1,5 +1,6 @@
 package com.security.javasec.config;
 
+import com.security.javasec.auth.UserDetailsLoader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,6 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -26,18 +25,19 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/**",
-                                "/api/v1/customers/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
-
-                        ).permitAll()  // allow login/signup
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-//                .userDetailsService(userService)
+//                .userDetailsService(userDetailsLoader)
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
 
+//
+//.requestMatchers("/api/v1/transactions").hasAuthority("ADMIN")// allow login/signup
+// hasRole("ADMIN")  ROLE_ +

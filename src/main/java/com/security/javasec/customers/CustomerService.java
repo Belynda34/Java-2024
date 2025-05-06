@@ -36,15 +36,23 @@ public class CustomerService {
 
 
     public ApiResponse<Customer> updateCustomer(String id,CustomerUpdateDTO cup) throws Exception {
-        Customer customer = customerRepository.findById(id).orElseThrow();
-        customer.setFirstName(cup.getFirstName());
-        customer.setLastName(cup.getLastName());
-        customer.setMobile(cup.getMobile());
-        customer.setDob(cup.getDob());
-        customer.setAccount(cup.getAccount());
+        try{
+            Customer customer = customerRepository.findById(id).orElseThrow();
+            customer.setFirstName(cup.getFirstName());
+            customer.setLastName(cup.getLastName());
+            customer.setMobile(cup.getMobile());
+            customer.setDob(cup.getDob());
+            customer.setAccount(cup.getAccount());
 
-        customerRepository.save(customer);
-        return new ApiResponse<>(true,"Updated successfully",customer);
+            customerRepository.save(customer);
+            return new ApiResponse<>(true,"Updated successfully",customer);
+        }catch (Exception e){
+            System.out.println("Error occurred while creating customer: " + e.getMessage());
+            e.printStackTrace(); // More detailed output including the stack trace
+
+            return new ApiResponse<>(false,"Failed to create customer", null);
+        }
+
     }
 
     public ApiResponse<Customer> deleteCustomer(String id){

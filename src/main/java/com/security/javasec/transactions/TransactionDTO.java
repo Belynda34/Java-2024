@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDTO {
 
@@ -19,4 +18,11 @@ public class TransactionDTO {
     private String toAccount;
     @NotNull
     private double amount;
+
+    public TransactionDTO(String customerId, TT transactionType, String toAccount, double amount) {
+        this.customerId = customerId;
+        this.transactionType = transactionType;
+        this.toAccount = toAccount;
+        this.amount = amount;
+    }
 }

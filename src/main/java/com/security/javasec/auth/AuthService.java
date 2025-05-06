@@ -3,7 +3,6 @@ package com.security.javasec.auth;
 
 import com.security.javasec.auth.exceptions.InvalidCredentialsException;
 import com.security.javasec.auth.exceptions.EmailTakenException;
-import com.security.javasec.enums.Role;
 import com.security.javasec.models.User;
 import com.security.javasec.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class AuthService {
             var user = new User();
             user.setEmail(dto.getEmail());
             user.setUsername(dto.getUsername());
-            user.setRole(Role.USER);
+            user.setRole(dto.getRole());
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             userRepository.save(user);
             System.out.println(user.toString());

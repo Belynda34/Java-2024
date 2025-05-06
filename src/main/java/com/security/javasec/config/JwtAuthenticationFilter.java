@@ -36,13 +36,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String email;
 
+
+
         if (authheader == null || !authheader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authheader.substring(7);
-        email = jwtService.extractUsername(jwt);
+        email = jwtService.extractEmail(jwt);
         System.out.println(email);
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsLoader.loadUserByUsername(email);
@@ -52,6 +54,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }else {
+                // Token is invalid, respond with 401
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid or expired token");
+                return;
             }
         }
 

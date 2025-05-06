@@ -1,6 +1,7 @@
 package com.security.javasec.auth;
 
 
+import com.security.javasec.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class RegisterDTO {
     private String username;
     private String email;
     private String password;
+    private Role role;
 }

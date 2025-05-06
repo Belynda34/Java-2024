@@ -1,6 +1,8 @@
 package com.security.javasec.config;
 
 
+
+import com.security.javasec.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,7 +25,7 @@ public class JWTService {
     private String SECRET_KEY;
 
 
-    public String extractUsername(String token){
+    public String extractEmail(String token){
         return extractClaim(token,Claims::getSubject);
     }
 
@@ -44,8 +46,18 @@ public class JWTService {
                 .getBody();
     }
 
+
+    private Key getSigningkey() {
+        byte[] key = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(key);
+    }
     public String generateToken(UserDetails userDetails){
-        return this.generateToken(new HashMap<>(),userDetails);
+        String email =((User)userDetails).getEmail();
+        String role = ((User)userDetails).getRole().name();
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("email",email);
+        claims.put("role",role);
+        return generateTokenWithClaims(claims,userDetails);
     }
 
     private Key getSigningKey() {
@@ -53,23 +65,48 @@ public class JWTService {
 //        byte[] key = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(key);
     }
-    public String generateToken(Map<String,Object>claims,UserDetails userDetails){
+    public String generateTokenWithClaims(Map<String,Object>claims,UserDetails userDetails){
         return Jwts
                 .builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(((User)userDetails).getEmail())//put in email for tokens
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+
+//    public String generateToken(Map<String,Object>claims,UserDetails userDetails){
+//        return Jwts
+//                .builder()
+//                .setClaims(claims)
+//                .setSubject(userDetails.getUsername())
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+//                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+//                .compact();
+//    }
+
+
+//    public boolean isTokenValid(String token,UserDetails userDetails){
+//        final String username = extractUsername(token);
+//        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+//    }
+
     public boolean isTokenValid(String token,UserDetails userDetails){
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        try{
+            final String email = extractClaim(token,claims -> claims.get("email",String.class));
+            return (email.equals(((User)userDetails).getEmail()) && !isTokenExpired(token));
+        }catch (Exception e ){
+            System.err.println("Error during token validation: " + e.getMessage());
+            return false;
+        }
+
     }
 
     public boolean isTokenExpired(String token){
         return extractClaim(token,Claims::getExpiration).before(new Date());
     }
+
 }
